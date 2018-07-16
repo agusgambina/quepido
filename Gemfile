@@ -9,5 +9,7 @@ gem "sinatra-cross_origin", "~> 0.4.0"
 
 # setup our test group and require rspec
 group :test do
-  gem "rspec"
+  gem "rspec", "~> 3.7"
+  gem "coderay", "~> 1.1"
+  gem "rack-test", "~> 0.7.0"
 end
