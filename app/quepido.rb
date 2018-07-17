@@ -1,15 +1,14 @@
 require 'sinatra/base'
-require 'sinatra/config_file'
-require 'json'
 require 'sinatra/cross_origin'
+require 'json'
 
 module QuePido
   class API < Sinatra::Base
-    register Sinatra::ConfigFile 
-    config_file '../config/comidas.yml'
-    clasicas = settings.clasicas
-    etnicas = settings.etnicas
-    todas = clasicas + etnicas
+    
+    def initialize(menu: Menu.new)
+      @menu = menu
+      super()
+    end
 
     set :bind, '0.0.0.0'
     configure do
@@ -35,25 +34,17 @@ module QuePido
       send_file 'public/index.html'
     end
 
-    get '/que/clasicas' do
-      dame_elemento_random_de clasicas
-    end
-
-    get '/que/etnicas' do
-      dame_elemento_random_de etnicas
-    end
-
-    get '/que/todas' do
-      dame_elemento_random_de todas
+    get '/que/:type' do
+      JSON.generate(@menu.dame_elemento_random_de(params['type']))
     end
 
     get '/que' do
       todas.to_json
     end
 
-    def dame_elemento_random_de(lista)
-      maxIndex = Random.rand(lista.size - 1)
-      JSON.generate('meal' => lista[maxIndex])
-    end
+    #def dame_elemento_random_de(lista)
+    #  maxIndex = Random.rand(lista.size - 1)
+    #  JSON.generate('meal' => lista[maxIndex])
+    #end
   end
 end
